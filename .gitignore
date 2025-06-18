@@ -1,0 +1,74 @@
+# Compiled class files
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Log Files
+*.log
+logs/
+target/*.log
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+.settings/
+.project
+.classpath
+*.sublime-project
+*.sublime-workspace
+!gradle/wrapper/gradle-wrapper.jar # Keep the Gradle wrapper JAR
+
+# Specific to Android Studio
+.idea/workspace.xml
+.idea/libraries/
+.idea/modules.xml
+.idea/runConfigurations.xml
+
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+.vscode/
+
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*.swp
+
+
+# Kotlin
+*.kt.meta
+*.kotlin_module
+
+# Misc
+.directory
