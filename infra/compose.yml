@@ -8,6 +8,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      - grafana
+      - prometheus
+      - alertmanager
+      - gatling
     env_file:
       #- backend/.env.development
       - backend/.env.production
@@ -66,7 +71,5 @@ services:
     volumes:
       - ./gatling/user-files:/opt/gatling/user-files
       - ./gatling/results:/opt/gatling/results
-    depends_on:
-      - backend
     entrypoint: [ "/opt/gatling/bin/gatling.sh", "-s", "CrudSimulation" ]
 
