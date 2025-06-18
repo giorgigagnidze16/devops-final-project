@@ -71,7 +71,7 @@
 
     - name: Upload compose.yml to /tmp
       ansible.builtin.copy:
-        src: ../../compose.yml
+        src: ../compose.yml
         dest: /tmp/compose.yml
         owner: "{{ ansible_user }}"
         mode: '0644'
