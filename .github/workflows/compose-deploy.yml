@@ -12,28 +12,35 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Checkout the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
+      # Set up Python for Ansible
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.10
 
+      # Install Ansible via pip
       - name: Install Ansible
         run: pip install ansible
 
+      # Create SSH key file from secret for Ansible to connect to the VM
       - name: Create SSH key file
         run: |
           echo "${{ secrets.GCP_VM_SSH_KEY }}" > id_rsa
           chmod 600 id_rsa
 
+      # Create Ansible inventory file dynamically
       - name: Create Ansible inventory file
         run: |
           echo "[gcp]" > inventory
           echo "${{ secrets.GCP_VM_HOST }} ansible_user=${{ secrets.GCP_VM_USER }} ansible_ssh_private_key_file=./id_rsa" >> inventory
 
+      # Run the Ansible Playbook
       - name: Run Ansible Playbook
         env:
-          ANSIBLE_HOST_KEY_CHECKING: 'False'
+          ANSIBLE_HOST_KEY_CHECKING: 'False' # Disable host key checking for convenience in CI, consider known_hosts for production
         run: |
-          ansible-playbook -i inventory ansible/playbook.yml
+          ansible-playbook -i inventory infra/ansible/playbook.yml
