@@ -1,0 +1,39 @@
+name: Deploy Docker Compose File to GCP
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'infra/compose.yml'
+      - 'infra/ansible/playbook.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.10
+
+      - name: Install Ansible
+        run: pip install ansible
+
+      - name: Create SSH key file
+        run: |
+          echo "${{ secrets.GCP_VM_SSH_KEY }}" > id_rsa
+          chmod 600 id_rsa
+
+      - name: Create Ansible inventory file
+        run: |
+          echo "[gcp]" > inventory
+          echo "${{ secrets.GCP_VM_HOST }} ansible_user=${{ secrets.GCP_VM_USER }} ansible_ssh_private_key_file=./id_rsa" >> inventory
+
+      - name: Run Ansible Playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: 'False'
+        run: |
+          ansible-playbook -i inventory ansible/playbook.yml

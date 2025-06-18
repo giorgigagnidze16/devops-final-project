@@ -1,0 +1,26 @@
+- name: Deploy Docker Compose to GCP VM
+  hosts: gcp
+  become: yes
+  tasks:
+    - name: Ensure Docker is installed
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Ensure pip is installed (for docker-compose)
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Ensure Docker Compose is installed
+      pip:
+        name: docker-compose
+        executable: pip3
+
+    - name: Upload compose.yml to /tmp
+      copy:
+        src: ./compose.yml
+        dest: /tmp/compose.yml
+        owner: "{{ ansible_user }}"
+        mode: '0644'
