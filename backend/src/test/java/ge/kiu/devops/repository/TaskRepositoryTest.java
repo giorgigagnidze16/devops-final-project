@@ -12,9 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class TaskRepositoryTest {
-
     @Autowired
-    TaskRepository taskRepository;
+    private TaskRepository taskRepository;
 
     @Test
     @DisplayName("Should save and retrieve a Task")
