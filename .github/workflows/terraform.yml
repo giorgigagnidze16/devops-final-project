@@ -32,13 +32,14 @@ jobs:
         run: terraform init
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve \
-          -var="gcp_credentials_file=gcp-key.json" \
-          -var="project_id=${{ secrets.GCP_PROJECT_ID }}" \
-          -var="region=europe-west3" \
-          -var="zone=europe-west3-a" \
-          -var="ssh_user=deployer" \
-          -var="ssh_pub_key=id_rsa.pub"
+        run: |
+          terraform apply -auto-approve \
+            -var="gcp_credentials_file=gcp-key.json" \
+            -var="project_id=${{ secrets.GCP_PROJECT_ID }}" \
+            -var="region=europe-west3" \
+            -var="zone=europe-west3-a" \
+            -var="ssh_user=deployer" \
+            -var="ssh_pub_key=id_rsa.pub"
 
       - name: Show Output IP
         run: terraform output instance_ip
