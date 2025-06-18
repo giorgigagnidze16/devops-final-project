@@ -40,7 +40,6 @@ dependencies {
 }
 
 
-//Build Dockerfile task
 tasks.register('dockerFile', Dockerfile) {
     dependsOn tasks.named('assemble')
 
