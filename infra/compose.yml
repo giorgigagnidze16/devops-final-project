@@ -10,3 +10,32 @@ services:
       - "8080:8080"
     env_file:
       - backend/.env.development
+
+
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+
+  gatling:
+    image: denvazh/gatling
+    container_name: gatling
+    volumes:
+      - ./gatling/user-files:/opt/gatling/user-files
+      - ./gatling/results:/opt/gatling/results
+    depends_on:
+      - backend
+    entrypoint: [ "/opt/gatling/bin/gatling.sh", "-s", "CrudSimulation" ]

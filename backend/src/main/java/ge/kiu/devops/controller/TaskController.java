@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -40,6 +41,7 @@ public class TaskController {
     @PostMapping
     @Operation(summary = "Create a new task", description = "Create a new task with the provided details")
     public TaskDto createTask(@RequestBody TaskCreateRequest request) {
+        burnCpuAndMemory();
         return taskService.createTask(request);
     }
 
@@ -58,5 +60,15 @@ public class TaskController {
         @Parameter(description = "ID of the task to delete", example = "1")
         @PathVariable Long id) {
         taskService.deleteTask(id);
+    }
+
+    private void burnCpuAndMemory() {
+        long sum = 0;
+        for (long i = 0; i < 1_000_000; i++) {
+            sum += i * i;
+        }
+
+        List<byte[]> junk = new ArrayList<>();
+        junk.add(new byte[1024 * 1024 * 10]);
     }
 }

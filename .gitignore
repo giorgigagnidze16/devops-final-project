@@ -101,3 +101,5 @@ pnpm-debug.log*
 # editor directories and files
 .idea
 .vscode
+
+/infra/gatling
