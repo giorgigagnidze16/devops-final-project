@@ -1,7 +1,10 @@
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
 plugins {
     id 'org.springframework.boot' version "${springBoot_version}"
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'com.bmuschko.docker-remote-api' version '9.4.0'
 }
 
 java {
@@ -27,6 +30,24 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+
+
+//Build Dockerfile task
+tasks.register('dockerFile', Dockerfile) {
+    dependsOn tasks.named('assemble')
+
+    destFile.set(project.file('Dockerfile'))
+
+    from("alpine:3.21.3")
+    runCommand('apk add --no-cache openjdk21')
+    print("Building Dockerfile for ${project.name}...")
+    print("build/libs/${bootJar.archiveFileName.get()}")
+    copyFile("build/libs/${bootJar.archiveFileName.get()}", '/app/')
+    workingDir('/app/')
+    entryPoint('java')
+    defaultCommand('-jar', '-Duser.timezone=UTC', "/app/${bootJar.archiveFileName.get()}")
+}
+
 
 test {
     useJUnitPlatform()
