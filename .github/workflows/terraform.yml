@@ -1,0 +1,44 @@
+name: "Terraform Apply (GCP VM)"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'infra/terraform/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Write GCP credentials file
+        run: |
+          echo '${{ secrets.GCP_CREDENTIALS }}' > gcp-key.json
+
+      - name: Write SSH pubkey
+        run: |
+          echo '${{ secrets.TF_SSH_PUB_KEY }}' > id_rsa.pub
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve \
+          -var="gcp_credentials_file=gcp-key.json" \
+          -var="project_id=${{ secrets.GCP_PROJECT_ID }}" \
+          -var="region=europe-west3" \
+          -var="zone=europe-west3-a" \
+          -var="ssh_user=deployer" \
+          -var="ssh_pub_key=id_rsa.pub"
+
+      - name: Show Output IP
+        run: terraform output instance_ip
