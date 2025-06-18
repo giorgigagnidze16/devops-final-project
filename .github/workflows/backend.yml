@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-test-prod:
+  build-test-upload:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,14 +44,6 @@ jobs:
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           source: "./backend/build/libs/backend-0.0.1.jar"
           target: "~/devops-final-project/backend/build/libs/"
-
-  deploy:
-    needs: build-test-prod
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
 
       - name: write .env on server
         uses: appleboy/ssh-action@v1.0.0
