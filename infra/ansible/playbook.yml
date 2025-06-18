@@ -2,7 +2,7 @@
   hosts: gcp
   become: yes
   tasks:
-    # --- Debugging (No changes needed here) ---
+    # --- Debugging ---
     - name: Display OS release info for debugging
       ansible.builtin.shell: |
         echo "--- lsb_release -a ---"
@@ -18,7 +18,7 @@
       ansible.builtin.debug:
         var: os_info_debug.stdout_lines
 
-    # --- Step 1: Fix Repository Configuration (MOVED UP) ---
+    # --- Step 1: Fix Repository Configuration ---
     - name: Remove any old/incorrect Docker source file
       ansible.builtin.file:
         path: /etc/apt/sources.list.d/docker.list
@@ -48,7 +48,7 @@
         filename: docker
         update_cache: false # We will update cache in the next task
 
-    # --- Step 2: Install All Packages (Consolidated Task) ---
+    # --- Step 2: Install All Packages ---
     - name: Install dependencies, Docker Engine, and Compose
       ansible.builtin.apt:
         name:
@@ -63,7 +63,7 @@
         state: present
         update_cache: yes # Cache is updated here, with the correct repo
 
-    # --- Step 3: Deploy Compose File (No changes needed here) ---
+    # --- Step 3: Deploy Compose File ---
     - name: Remove existing compose.yml from /tmp if present
       ansible.builtin.file:
         path: /tmp/compose.yml
