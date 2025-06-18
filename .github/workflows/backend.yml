@@ -29,6 +29,18 @@ jobs:
       - name: checkstyle
         run: ./backend/gradlew checkstyleMain checkstyleTest
 
+      - name: Build JAR
+        run: ./backend/gradlew bootJar
+
+      - name: Upload JAR to server
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          source: "./backend/build/libs/backend-0.0.1.jar"
+          target: "~/devops-final-project/backend/build/libs/"
+
   deploy:
     needs: build-test-prod
     runs-on: ubuntu-latest
