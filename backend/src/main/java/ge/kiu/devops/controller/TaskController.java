@@ -2,6 +2,7 @@ package ge.kiu.devops.controller;
 
 import ge.kiu.devops.entity.Task;
 import ge.kiu.devops.repository.TaskRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +17,9 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
+@RequiredArgsConstructor
 public class TaskController {
     private final TaskRepository taskRepository;
-
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
 
     @GetMapping
     public List<Task> getAllTasks() {
