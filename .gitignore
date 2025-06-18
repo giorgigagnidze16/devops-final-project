@@ -33,7 +33,6 @@ build/
 .classpath
 *.sublime-project
 *.sublime-workspace
-!gradle/wrapper/gradle-wrapper.jar # Keep the Gradle wrapper JAR
 
 # Specific to Android Studio
 .idea/workspace.xml
