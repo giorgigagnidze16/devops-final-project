@@ -13,10 +13,10 @@
         name: python3-pip
         state: present
 
-    - name: Ensure Docker Compose is installed
-      pip:
-        name: docker-compose
-        executable: pip3
+    - name: Ensure Docker Compose plugin is installed
+      apt:
+        name: docker-compose-plugin
+        state: present
 
     - name: Remove existing compose.yml from /tmp if present
       file:
