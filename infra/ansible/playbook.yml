@@ -1,14 +1,14 @@
-- name: Deploy Docker Compose to GCP VM
+- name: Upload Docker Compose to GCP VM
   hosts: gcp
   become: yes
   tasks:
-    - name: Ensure Docker is installed
+    - name: Ensure docker  installed
       apt:
         name: docker.io
         state: present
         update_cache: yes
 
-    - name: Ensure pip is installed (for docker-compose)
+    - name: Ensure pip is installed
       apt:
         name: python3-pip
         state: present
@@ -17,6 +17,11 @@
       pip:
         name: docker-compose
         executable: pip3
+
+    - name: Remove existing compose.yml from /tmp if present
+      file:
+        path: /tmp/compose.yml
+        state: absent
 
     - name: Upload compose.yml to /tmp
       copy:
