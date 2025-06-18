@@ -44,6 +44,13 @@ jobs:
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           source: "./backend/build/libs/backend-0.0.1.jar"
           target: "~/devops-final-project/backend/build/libs/"
+          strip_components: 3
+
+      - name: get .env.production
+        run: |
+          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" > ./backend/.env.production
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> ./backend/.env.production
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> ./backend/.env.production
 
       - name: write .env on server
         uses: appleboy/ssh-action@v1.0.0
@@ -51,12 +58,11 @@ jobs:
           host: ${{ secrets.GCP_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
-          script: |
-            cat > ~/devops-final-project/backend/.env.production <<EOF
-            SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}
-            SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}
-            SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-            EOF
+          source: "./backend/.env.production"
+          target: "~/devops-final-project/backend/"
+
+      - name: remove local .env.production
+        run: rm ./backend/.env.production
 
       - name: SSH Deploy to GCP VM and docker compose up -d
         uses: appleboy/ssh-action@v1.0.0
