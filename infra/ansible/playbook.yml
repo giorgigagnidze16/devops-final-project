@@ -1,4 +1,4 @@
-- name: Upload Docker Compose to GCP VM
+- name: Upload compose file to GCP VM
   hosts: gcp
   become: yes
   tasks:
@@ -15,19 +15,14 @@
     - name: Add Docker GPG apt Key
       shell: |
         install -m 0755 -d /etc/apt/keyrings
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       args:
         creates: /etc/apt/keyrings/docker.gpg
 
     - name: Add Docker repository
       shell: |
-        if [ -f /etc/debian_version ]; then
-          distro="debian"
-        else
-          distro="ubuntu"
-        fi
         codename=$(lsb_release -cs)
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/$distro $codename stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $codename stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
       args:
         creates: /etc/apt/sources.list.d/docker.list
 
@@ -45,14 +40,14 @@
         name: docker-compose-plugin
         state: present
 
-    - name: delete existing docker-compose.yml from /tmp if present
+    - name: Remove existing compose.yml from /tmp if present
       file:
-        path: /tmp/docker-compose.yml
+        path: /tmp/compose.yml
         state: absent
 
-    - name: Upload docker-compose.yml to /tmp
+    - name: Upload compose.yml to /tmp
       copy:
-        src: ./docker-compose.yml
-        dest: /tmp/docker-compose.yml
+        src: ./compose.yml
+        dest: /tmp/compose.yml
         owner: "{{ ansible_user }}"
         mode: '0644'
