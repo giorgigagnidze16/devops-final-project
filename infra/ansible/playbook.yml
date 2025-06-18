@@ -2,23 +2,6 @@
   hosts: gcp
   become: yes
   tasks:
-    # --- Debugging ---
-    - name: Display OS release info for debugging
-      ansible.builtin.shell: |
-        echo "--- lsb_release -a ---"
-        lsb_release -a
-        echo "--- cat /etc/os-release ---"
-        cat /etc/os-release
-        echo "--- files in /etc/apt/sources.list.d/ ---"
-        ls -la /etc/apt/sources.list.d/
-      register: os_info_debug
-      changed_when: false
-
-    - name: Print OS debugging info
-      ansible.builtin.debug:
-        var: os_info_debug.stdout_lines
-
-    # --- Step 1: Fix Repository Configuration ---
     - name: Remove any old/incorrect Docker source file
       ansible.builtin.file:
         path: /etc/apt/sources.list.d/docker.list
@@ -30,7 +13,7 @@
         state: directory
         mode: '0755'
 
-    - name: Add Docker's official GPG key for Debian
+    - name: Add Docker GPG key for Debian
       ansible.builtin.shell: |
         curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       args:
@@ -48,8 +31,7 @@
         filename: docker
         update_cache: false # We will update cache in the next task
 
-    # --- Step 2: Install All Packages ---
-    - name: Install dependencies, Docker Engine, and Compose
+    - name: Install packages
       ansible.builtin.apt:
         name:
           - ca-certificates
@@ -61,9 +43,8 @@
           - containerd.io
           - docker-compose-plugin
         state: present
-        update_cache: yes # Cache is updated here, with the correct repo
+        update_cache: yes
 
-    # --- Step 3: Deploy Compose File ---
     - name: Remove existing compose.yml from /tmp if present
       ansible.builtin.file:
         path: /tmp/compose.yml
