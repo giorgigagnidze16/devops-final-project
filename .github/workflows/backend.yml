@@ -20,17 +20,21 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: give wrapper permissions
-        run: chmod +x ./backend/gradlew
+      - name: gradlew permissions
+        run: chmod +x gradlew
+        working-directory: ./backend
 
-      - name: tests
-        run: ./backend/gradlew test
+      - name: Run tests
+        run: ./gradlew test
+        working-directory: ./backend
 
-      - name: checkstyle
-        run: ./backend/gradlew checkstyleMain checkstyleTest
+      - name: Checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest
+        working-directory: ./backend
 
       - name: Build JAR
-        run: ./backend/gradlew bootJar
+        run: ./gradlew build
+        working-directory: ./backend
 
       - name: Upload JAR to server
         uses: appleboy/scp-action@v0.1.5
