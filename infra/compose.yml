@@ -9,7 +9,8 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - backend/.env.development
+      #- backend/.env.development
+      - backend/.env.production
 
   frontend:
     container_name: frontend

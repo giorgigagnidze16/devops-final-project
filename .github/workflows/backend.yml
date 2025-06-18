@@ -1,1 +1,64 @@
+name: Backend CI & Deploy
 
+on:
+  push:
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+jobs:
+  build-test-prod:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: give wrapper permissions
+        run: chmod +x ./backend/gradlew
+
+      - name: tests
+        run: ./backend/gradlew test
+
+      - name: checkstyle
+        run: ./backend/gradlew checkstyleMain checkstyleTest
+
+  deploy:
+    needs: build-test-prod
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: write .env on server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          script: |
+            cat > ~/devops-final-project/backend/.env.production <<EOF
+            SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}
+            SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}
+            SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+            EOF
+
+      - name: SSH Deploy to GCP VM and docker compose up -d
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          script: |
+            cd ~/devops-final-project/infra
+            git pull origin main
+            docker compose build backend
+            docker compose up -d
+            docker image prune -f
