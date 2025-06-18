@@ -72,4 +72,3 @@ services:
       - ./gatling/user-files:/opt/gatling/user-files
       - ./gatling/results:/opt/gatling/results
     entrypoint: [ "/opt/gatling/bin/gatling.sh", "-s", "CrudSimulation" ]
-
