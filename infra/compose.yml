@@ -16,6 +16,8 @@ services:
     build:
       context: ../frontend
       dockerfile: Dockerfile
+    env_file:
+      - frontend/.env.development
     expose:
       - "5000"
 
