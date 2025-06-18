@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           source: "./backend/build/libs/backend-0.0.1.jar"
-          target: "~/devops-final-project/backend/build/libs/"
+          target: "~/devops-final-project/"
           strip_components: 3
 
       - name: get .env.production
@@ -52,8 +52,8 @@ jobs:
           echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> ./backend/.env.production
           echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> ./backend/.env.production
 
-      - name: write .env on server
-        uses: appleboy/ssh-action@v1.0.0
+      - name: upload .env.production to server
+        uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.GCP_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
@@ -71,8 +71,25 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           script: |
+            # Create dirs if not exist
+            mkdir -p ~/devops-final-project/infra
+            mkdir -p ~/devops-final-project/backend/build/libs
+            
+            # Pull latest code if repo exists, otherwise clone
+            if [ -d ~/devops-final-project/.git ]; then
+              cd ~/devops-final-project && git pull origin main
+            else
+              cd ~ && git clone https://github.com/<your-repo> devops-final-project
+            fi
+            
             cd ~/devops-final-project/infra
-            git pull origin main
-            docker compose build backend
-            docker compose up -d
+            
+            if command -v docker-compose > /dev/null; then
+              docker-compose build backend
+              docker-compose up -d
+            else
+              docker compose build backend
+              docker compose up -d
+            fi
+            
             docker image prune -f
