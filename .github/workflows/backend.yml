@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           source: "./backend/build/libs/backend-0.0.1.jar"
-          target: "~/devops-final-project/"
+          target: "/tmp/"
           strip_components: 3
 
       - name: get .env.production
@@ -59,7 +59,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           source: "./backend/.env.production"
-          target: "~/devops-final-project/backend/"
+          target: "/tmp/backend/"
 
       - name: remove local .env.production
         run: rm ./backend/.env.production
@@ -71,18 +71,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           script: |
-            # Create dirs if not exist
-            mkdir -p ~/devops-final-project/infra
-            mkdir -p ~/devops-final-project/backend/build/libs
-            
-            # Pull latest code if repo exists, otherwise clone
-            if [ -d ~/devops-final-project/.git ]; then
-              cd ~/devops-final-project && git pull origin main
-            else
-              cd ~ && git clone https://github.com/<your-repo> devops-final-project
-            fi
-            
-            cd ~/devops-final-project/infra
+            cd /tmp/backend
             
             if command -v docker-compose > /dev/null; then
               docker-compose build backend
