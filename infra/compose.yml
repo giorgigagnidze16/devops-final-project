@@ -47,9 +47,9 @@ services:
     ports:
       - "9093:9093"
     env_file:
-      - ./monitoring/.alertmanager.env
+      - monitoring/alertmanager/.alertmanager.env
     volumes:
-      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
 
   grafana:
     image: grafana/grafana:9.5.2
