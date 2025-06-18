@@ -1,40 +1,63 @@
-name: Deploy Docker Compose File to GCP
+- name: Upload compose file to GCP VM
+  hosts: gcp
+  become: yes
+  tasks:
+    - name: Install required apt dependencies
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'infra/compose.yml'
-      - 'infra/ansible/playbook.yml'
+    - name: Remove any old Docker Ubuntu repo file
+      file:
+        path: /etc/apt/sources.list.d/docker.list
+        state: absent
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    - name: Remove any old Docker Ubuntu repo file (wildcard)
+      shell: rm -f /etc/apt/sources.list.d/docker-ubuntu*.list
+      args:
+        warn: false
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
+    - name: Add Docker GPG apt Key
+      shell: |
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      args:
+        creates: /etc/apt/keyrings/docker.gpg
 
-      - name: Install Ansible
-        run: pip install ansible
+    - name: Add Docker repository for Ubuntu
+      shell: |
+        codename=$(lsb_release -cs)
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $codename stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+      args:
+        creates: /etc/apt/sources.list.d/docker.list
 
-      - name: Create SSH key file
-        run: |
-          echo "${{ secrets.GCP_VM_SSH_KEY }}" > id_rsa
-          chmod 600 id_rsa
+    - name: Update apt cache
+      apt:
+        update_cache: yes
 
-      - name: Create Ansible inventory file
-        run: |
-          echo "[gcp]" > inventory
-          echo "${{ secrets.GCP_VM_HOST }} ansible_user=${{ secrets.GCP_VM_USER }} ansible_ssh_private_key_file=./id_rsa" >> inventory
+    - name: Ensure Docker Engine is installed
+      apt:
+        name: docker-ce
+        state: present
 
-      - name: Run Ansible Playbook
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: 'False'
-        run: |
-          ansible-playbook -i inventory infra/ansible/playbook.yml
+    - name: Ensure Compose is installed
+      apt:
+        name: docker-compose-plugin
+        state: present
+
+    - name: Remove existing compose.yml from /tmp if present
+      file:
+        path: /tmp/compose.yml
+        state: absent
+
+    - name: Upload compose.yml to /tmp
+      copy:
+        src: ./compose.yml
+        dest: /tmp/compose.yml
+        owner: "{{ ansible_user }}"
+        mode: '0644'
