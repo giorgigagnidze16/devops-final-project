@@ -1,7 +1,11 @@
 package ge.kiu.devops.controller;
 
-import ge.kiu.devops.entity.Task;
-import ge.kiu.devops.repository.TaskRepository;
+import ge.kiu.devops.dto.TaskCreateRequest;
+import ge.kiu.devops.dto.TaskDto;
+import ge.kiu.devops.service.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,37 +17,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
+@Tag(name = "Tasks", description = "Task management API")
 @RequiredArgsConstructor
 public class TaskController {
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
     @GetMapping
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    @Operation(summary = "Get all tasks", description = "Retrieve a list of all tasks")
+    public List<TaskDto> getAllTasks() {
+        return taskService.getAllTasks();
     }
 
     @GetMapping("/{id}")
-    public Optional<Task> getTask(@PathVariable Long id) {
-        return taskRepository.findById(id);
+    @Operation(summary = "Get a task by ID", description = "Retrieve a single task by its ID")
+    public TaskDto getTask(@Parameter(description = "ID of the task", example = "1") @PathVariable Long id) {
+        return taskService.getTaskById(id);
     }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return taskRepository.save(task);
+    @Operation(summary = "Create a new task", description = "Create a new task with the provided details")
+    public TaskDto createTask(@RequestBody TaskCreateRequest request) {
+        return taskService.createTask(request);
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task task) {
-        task.setId(id);
-        return taskRepository.save(task);
+    @Operation(summary = "Update an existing task", description = "Update the task with the specified ID")
+    public TaskDto updateTask(
+        @Parameter(description = "ID of the task to update", example = "1")
+        @PathVariable Long id,
+        @RequestBody TaskCreateRequest request) {
+        return taskService.updateTask(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
-        taskRepository.deleteById(id);
+    @Operation(summary = "Delete a task", description = "Delete the task with the specified ID")
+    public void deleteTask(
+        @Parameter(description = "ID of the task to delete", example = "1")
+        @PathVariable Long id) {
+        taskService.deleteTask(id);
     }
 }
