@@ -69,6 +69,6 @@ public class TaskController {
         }
 
         List<byte[]> junk = new ArrayList<>();
-        junk.add(new byte[1024 * 1024 * 10]);
+        junk.add(new byte[1024 * 1024 * 3]);
     }
 }
