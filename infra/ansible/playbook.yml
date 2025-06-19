@@ -63,10 +63,11 @@
         dest: "/tmp/deployment/infra/"
         recursive: true
         dirs: true
-        delegate_to: localhost
         rsync_opts:
           - "--exclude=terraform/"
           - "--delete"
+        delegate_to: localhost
+
 
     - name: Set owner and mode for copied files
       ansible.builtin.file:
