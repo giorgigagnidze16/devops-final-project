@@ -57,16 +57,16 @@
         mode: '0755'
         owner: "{{ ansible_user }}"
 
-    - name: Copy infra except terraform using
-      ansible.builtin.synchronize:
+    - name: Copy infra except terraform using synchronize
+      ansible.posix.synchronize:
         src: "../infra/"
         dest: "/tmp/deployment/infra/"
         recursive: true
-        delete_after: true
         dirs: true
-        exclude:
-          - "terraform/"
-      delegate_to: localhost
+        delegate_to: localhost
+        rsync_opts:
+          - "--exclude=terraform/"
+          - "--delete"
 
     - name: Set owner and mode for copied files
       ansible.builtin.file:
