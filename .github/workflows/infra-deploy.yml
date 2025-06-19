@@ -1,11 +1,10 @@
-name: Deploy Docker Compose File to GCP
+name: deploy infra using Ansible
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'infra/compose.yml'
       - 'infra/ansible/**'
 
 jobs:
