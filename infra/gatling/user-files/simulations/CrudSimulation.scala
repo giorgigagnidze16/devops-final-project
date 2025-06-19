@@ -22,13 +22,13 @@ class CrudSimulation extends Simulation {
         .post("/api/tasks")
         .body(StringBody("""{"description": "${desc}", "completed": ${completed}}""")).asJson
         .check(status.is(200))
-        .check(jsonPath("$.id").saveAs("taskId"))
+        .check(jsonPath("$.id").saveAs("id"))
     )
     // UPDATE with new random description
     .exec(session => session.set("desc2", "Task " + Random.alphanumeric.take(10).mkString))
     .exec(
       http("Update Task")
-        .put("/api/tasks/${taskId}")
+        .put("/api/tasks/${id}")
         .body(StringBody("""{"description": "${desc2}", "completed": false}""")).asJson
         .check(status.is(200))
     )
@@ -41,7 +41,7 @@ class CrudSimulation extends Simulation {
     // DELETE
     .exec(
       http("Delete Task")
-        .delete("/api/tasks/${taskId}")
+        .delete("/api/tasks/${id}")
         .check(status.is(200))
     )
 
