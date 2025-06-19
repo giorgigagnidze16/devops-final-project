@@ -24,4 +24,3 @@
       - "--exclude=terraform"
       - "--exclude=.git"
       - "--exclude=ansible"
-  delegate_to: "{{ inventory_hostname }}"
