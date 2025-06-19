@@ -27,7 +27,7 @@ jobs:
         run: npm run build
         working-directory: ./frontend
 
-      - name: Empty frontend deployment directory
+      - name: delete frontend deployment directory
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.GCP_VM_HOST }}
@@ -36,7 +36,16 @@ jobs:
           script: |
             rm -rf /tmp/deployment/frontend/*
 
-      - name: Upload frontend Dockerfile
+      - name: upload json configs
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          source: ./frontend/*.json
+          target: /tmp/deployment/
+
+      - name: upload frontend Dockerfile
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.GCP_VM_HOST }}
@@ -46,7 +55,7 @@ jobs:
           target: /tmp/deployment/
 
 
-      - name: Upload frontend build folder
+      - name: upload frontend build folder
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.GCP_VM_HOST }}
