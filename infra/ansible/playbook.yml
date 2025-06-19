@@ -57,9 +57,10 @@
         path: /tmp/deployment/*
         state: absent
 
-    - name: Copy infra folder except terraform subfolder
-      ansible.builtin.synchronize:
-        src: ../infra/
-        dest: /tmp/deployment/infra/
-        rsync_opts:
-          - "--exclude=terraform"
+    - name: Copy all folders except terraform
+      ansible.builtin.copy:
+        src: "../infra/{{ item }}"
+        dest: "/tmp/deployment/infra/{{ item }}"
+        owner: "{{ ansible_user }}"
+        mode: '0644'
+      with_items: "{{ lookup('fileglob', '../infra/*', wantlist=True) | map('basename') | difference(['terraform']) }}"
