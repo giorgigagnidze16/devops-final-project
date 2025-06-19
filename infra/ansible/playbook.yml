@@ -59,6 +59,10 @@
         mode: '0755'
         owner: "{{ ansible_user }}"
 
+    - name: Print current working directory
+      ansible.builtin.command: pwd
+      delegate_to: localhost
+
     - name: Copy all folders except terraform
       ansible.builtin.copy:
         src: "../{{ item }}"
