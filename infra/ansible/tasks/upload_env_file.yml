@@ -1,3 +1,10 @@
+- name: Ensure backend directory exists
+  ansible.builtin.file:
+    path: /tmp/deployment/infra/backend
+    state: directory
+    owner: "{{ ansible_user | default('deployer') }}"
+    mode: '0755'
+
 - name: Upload backend .env.development file
   ansible.builtin.copy:
     dest: /tmp/deployment/infra/backend/.env.development
