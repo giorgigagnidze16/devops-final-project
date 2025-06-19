@@ -45,6 +45,13 @@
         state: present
         update_cache: yes
 
+    - name: check /tmp/deployment directory exists
+      ansible.builtin.file:
+        path: /tmp/deployment
+        state: directory
+        mode: '0755'
+        owner: "{{ ansible_user }}"
+
     - name: Remove existing compose.yml from /tmp/deployment if present
       ansible.builtin.file:
         path: /tmp/deployment/compose.yml
