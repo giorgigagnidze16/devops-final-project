@@ -2,12 +2,12 @@
   hosts: gcp
   become: yes
   tasks:
-    - name: Remove any old/incorrect Docker source file
+    - name: delete old Docker source file
       ansible.builtin.file:
         path: /etc/apt/sources.list.d/docker.list
         state: absent
 
-    - name: Ensure /etc/apt/keyrings directory exists
+    - name: check /etc/apt/keyrings directory exists
       ansible.builtin.file:
         path: /etc/apt/keyrings
         state: directory
@@ -29,7 +29,7 @@
         repo: "deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian {{ debian_codename.stdout }} stable"
         state: present
         filename: docker
-        update_cache: false # We will update cache in the next task
+        update_cache: false
 
     - name: Install packages
       ansible.builtin.apt:
@@ -45,14 +45,14 @@
         state: present
         update_cache: yes
 
-    - name: Remove existing compose.yml from /tmp if present
+    - name: Remove existing compose.yml from /tmp/deployment if present
       ansible.builtin.file:
-        path: /tmp/compose.yml
+        path: /tmp/deployment/compose.yml
         state: absent
 
-    - name: Upload compose.yml to /tmp
+    - name: Upload compose.yml to /tmp/deployment
       ansible.builtin.copy:
         src: ../compose.yml
-        dest: /tmp/compose.yml
+        dest: /tmp/deployment/compose.yml
         owner: "{{ ansible_user }}"
         mode: '0644'
