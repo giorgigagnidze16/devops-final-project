@@ -1,0 +1,9 @@
+- name: Upload backend .env.development file
+  ansible.builtin.copy:
+    dest: /tmp/deployment/infra/backend/.env.development
+    content: |
+      SPRING_DATASOURCE_URL={{ spring_datasource_url }}
+      SPRING_DATASOURCE_USERNAME={{ spring_datasource_username }}
+      SPRING_DATASOURCE_PASSWORD={{ spring_datasource_password }}
+    owner: "{{ ansible_user | default('deployer') }}"
+    mode: '0600'
