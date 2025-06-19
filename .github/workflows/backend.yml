@@ -24,61 +24,41 @@ jobs:
         run: chmod +x gradlew
         working-directory: ./backend
 
-      - name: Run tests
+      - name: run tests
         run: ./gradlew test
         working-directory: ./backend
 
-      - name: Checkstyle
+      - name: run checkstyle
         run: ./gradlew checkstyleMain checkstyleTest
         working-directory: ./backend
 
-      - name: Build JAR
-        run: ./gradlew build
+      - name: build jar
+        run: ./gradlew bootJar
         working-directory: ./backend
 
-      - name: Upload JAR to server
-        uses: appleboy/scp-action@v0.1.5
-        with:
-          host: ${{ secrets.GCP_VM_HOST }}
-          username: ${{ secrets.GCP_VM_USER }}
-          key: ${{ secrets.GCP_VM_SSH_KEY }}
-          source: "./backend/build/libs/backend-0.0.1.jar"
-          target: "/tmp/"
-          strip_components: 3
-
-      - name: get .env.production
-        run: |
-          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" > ./backend/.env.production
-          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> ./backend/.env.production
-          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> ./backend/.env.production
-
-      - name: upload .env.production to server
-        uses: appleboy/scp-action@v0.1.5
-        with:
-          host: ${{ secrets.GCP_VM_HOST }}
-          username: ${{ secrets.GCP_VM_USER }}
-          key: ${{ secrets.GCP_VM_SSH_KEY }}
-          source: "./backend/.env.production"
-          target: "/tmp/backend/"
-
-      - name: remove local .env.production
-        run: rm ./backend/.env.production
-
-      - name: SSH Deploy to GCP VM and docker compose up -d
+      - name: empty deployment directory
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.GCP_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           script: |
-            cd /tmp/backend
-            
-            if command -v docker-compose > /dev/null; then
-              docker-compose build backend
-              docker-compose up -d
-            else
-              docker compose build backend
-              docker compose up -d
-            fi
-            
-            docker image prune -f
+            rm -rf /tmp/deployment/backend/*
+
+      - name: Copy Dockerfile to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          source: ./backend/Dockerfile
+          target: /tmp/deployment/backend
+
+      - name: Copy build/libs to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          source: ./backend/build/libs
+          target: /tmp/deployment/backend
