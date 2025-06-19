@@ -2,27 +2,23 @@
   ansible.builtin.file:
     path: /etc/apt/sources.list.d/docker.list
     state: absent
-  when: not docker_stat.stat.exists
 
 - name: check /etc/apt/keyrings directory exists
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
     mode: '0755'
-  when: not docker_stat.stat.exists
 
 - name: add docker GPG key for Debian
   ansible.builtin.shell: |
     curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
   args:
     creates: /etc/apt/keyrings/docker.gpg
-  when: not docker_stat.stat.exists
 
 - name: get the debian release codename
   ansible.builtin.shell: lsb_release -cs
   register: debian_codename
   changed_when: false
-  when: not docker_stat.stat.exists
 
 - name: add docker repository for Debian
   ansible.builtin.apt_repository:
@@ -30,7 +26,6 @@
     state: present
     filename: docker
     update_cache: false
-  when: not docker_stat.stat.exists
 
 - name: install docker packages
   ansible.builtin.apt:
@@ -45,4 +40,3 @@
       - docker-compose-plugin
     state: latest
     update_cache: yes
-  when: not docker_stat.stat.exists
