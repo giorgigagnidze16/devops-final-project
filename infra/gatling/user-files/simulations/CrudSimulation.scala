@@ -24,6 +24,7 @@ class CrudSimulation extends Simulation {
         .check(status.is(200))
         .check(jsonPath("$.id").saveAs("id"))
     )
+    .exitHereIfFailed
     // UPDATE with new random description
     .exec(session => session.set("desc2", "Task " + Random.alphanumeric.take(10).mkString))
     .exec(

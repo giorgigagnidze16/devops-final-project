@@ -3,6 +3,7 @@ name: devops-final-prj
 services:
   backend:
     container_name: backend
+    restart: always
     build:
       context: ../backend
       dockerfile: Dockerfile

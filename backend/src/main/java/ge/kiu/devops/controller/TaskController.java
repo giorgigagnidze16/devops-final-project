@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/tasks")
 @Tag(name = "Tasks", description = "Task management API")
@@ -29,18 +31,21 @@ public class TaskController {
     @GetMapping
     @Operation(summary = "Get all tasks", description = "Retrieve a list of all tasks")
     public List<TaskDto> getAllTasks() {
+        log.info("getting tasks");
         return taskService.getAllTasks();
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a task by ID", description = "Retrieve a single task by its ID")
     public TaskDto getTask(@Parameter(description = "ID of the task", example = "1") @PathVariable Long id) {
+        log.info("getting task");
         return taskService.getTaskById(id);
     }
 
     @PostMapping
     @Operation(summary = "Create a new task", description = "Create a new task with the provided details")
     public TaskDto createTask(@RequestBody TaskCreateRequest request) {
+        log.info("Creating task: {}", request);
         burnCpuAndMemory();
         return taskService.createTask(request);
     }
