@@ -52,7 +52,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           source: ./backend/Dockerfile
-          target: /tmp/deployment/backend
+          target: /tmp/deployment/
 
       - name: Copy build/libs to server
         uses: appleboy/scp-action@v0.1.4
@@ -61,4 +61,4 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           source: ./backend/build/libs
-          target: /tmp/deployment/backend
+          target: /tmp/deployment/
