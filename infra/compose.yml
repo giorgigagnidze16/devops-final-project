@@ -14,6 +14,9 @@ services:
       - prometheus
       - alertmanager
       - gatling
+      - elasticsearch
+      - logstash
+      - kibana
     env_file:
       - backend/prod.env
 
