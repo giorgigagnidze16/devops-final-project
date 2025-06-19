@@ -52,14 +52,14 @@
         mode: '0755'
         owner: "{{ ansible_user }}"
 
-    - name: Remove existing compose.yml from /tmp/deployment if present
+    - name: Remove existing /tmp/deployment contents if exist
       ansible.builtin.file:
-        path: /tmp/deployment/compose.yml
+        path: /tmp/deployment/*
         state: absent
 
-    - name: Upload compose.yml to /tmp/deployment
-      ansible.builtin.copy:
-        src: ../compose.yml
-        dest: /tmp/deployment/compose.yml
-        owner: "{{ ansible_user }}"
-        mode: '0644'
+    - name: Copy infra folder except terraform subfolder
+      ansible.builtin.synchronize:
+        src: ../infra/
+        dest: /tmp/deployment/infra/
+        rsync_opts:
+          - "--exclude=terraform"
