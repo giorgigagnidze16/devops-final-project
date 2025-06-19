@@ -45,7 +45,7 @@ jobs:
           script: |
             rm -rf /tmp/deployment/backend/*
 
-      - name: Copy Dockerfile to server
+      - name: upload Dockerfile
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.GCP_VM_HOST }}
@@ -54,7 +54,7 @@ jobs:
           source: ./backend/Dockerfile
           target: /tmp/deployment/
 
-      - name: Copy build/libs to server
+      - name: upload build/libs
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.GCP_VM_HOST }}
@@ -62,3 +62,14 @@ jobs:
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           source: ./backend/build/libs
           target: /tmp/deployment/
+
+      - name: start backend container
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          script: |
+            cd /tmp/deployment/
+            docker compose build backend
+            docker compose up -d backend
