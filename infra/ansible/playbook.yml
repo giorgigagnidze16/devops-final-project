@@ -45,29 +45,33 @@
         state: present
         update_cache: yes
 
-    - name: check /tmp/deployment directory exists
+    - name: Remove /tmp/deployment/infra directory
       ansible.builtin.file:
-        path: /tmp/deployment
+        path: /tmp/deployment/infra
+        state: absent
+
+    - name: check /tmp/deployment/infra directory exists
+      ansible.builtin.file:
+        path: /tmp/deployment/infra
         state: directory
         mode: '0755'
         owner: "{{ ansible_user }}"
 
-    - name: Remove existing compose.yml from /tmp/deployment if present
+    - name: Copy infra except terraform using
+      ansible.builtin.synchronize:
+        src: "../infra/"
+        dest: "/tmp/deployment/infra/"
+        recursive: true
+        delete_after: true
+        dirs: true
+        exclude:
+          - "terraform/"
+      delegate_to: localhost
+
+    - name: Set owner and mode for copied files
       ansible.builtin.file:
-        path: /tmp/deployment/compose.yml
-        state: absent
-
-    - name: Copy all folders except terraform
-      ansible.builtin.copy:
-        src: "../infra/{{ item }}"
-        dest: "/tmp/deployment/infra/{{ item }}"
+        path: "/tmp/deployment/infra"
         owner: "{{ ansible_user }}"
-        mode: '0644'
-      with_items: "{{ lookup('fileglob', '../infra/*', wantlist=True) | map('basename') | difference(['terraform']) }}"
-
-    - name: Upload compose.yml to /tmp/deployment
-      ansible.builtin.copy:
-        src: ../compose.yml
-        dest: /tmp/deployment/compose.yml
-        owner: "{{ ansible_user }}"
-        mode: '0644'
+        group: "{{ ansible_user }}"
+        mode: '0755'
+        recurse: true
