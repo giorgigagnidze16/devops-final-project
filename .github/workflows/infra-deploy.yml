@@ -36,4 +36,9 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'False'
         run: |
-          ansible-playbook -i inventory infra/ansible/playbook.yml
+          ansible-playbook -i inventory infra/ansible/playbook.yml \
+            -e "smtp_smarthost=${{ secrets.SMTP_SMARTHOST }}" \
+            -e "smtp_from=${{ secrets.SMTP_FROM }}" \
+            -e "smtp_auth_username=${{ secrets.SMTP_AUTH_USERNAME }}" \
+            -e "smtp_auth_password=${{ secrets.SMTP_AUTH_PASSWORD }}" \
+            -e "smtp_to=${{ secrets.SMTP_TO }}"
