@@ -71,5 +71,5 @@ jobs:
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           script: |
             cd /tmp/deployment/infra
-            docker compose build --no-cache backend
-            docker compose up -d backend
+            docker-compose build --no-cache backend
+            docker-compose up -d backend
