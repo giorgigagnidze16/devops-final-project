@@ -2,4 +2,4 @@
   become: yes
   tasks:
     - import_tasks: tasks/docker_install.yml
-    - import_tasks: tasks/upload_deploy.yml
+    - import_tasks: tasks/upload_infra.yml
