@@ -23,8 +23,8 @@ resource "google_compute_instance" "app" {
   boot_disk {
     initialize_params {
       image = var.disk_image
+      size = 40
     }
-    disk_size_gb = 40
   }
 
   network_interface {
