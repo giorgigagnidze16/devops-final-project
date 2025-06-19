@@ -1,3 +1,9 @@
+- name: Ensure rsync is installed
+  ansible.builtin.apt:
+    name: rsync
+    state: present
+    update_cache: yes
+
 - name: delete infra directory
   ansible.builtin.file:
     path: /tmp/deployment/infra
