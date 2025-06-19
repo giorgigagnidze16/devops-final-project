@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'infra/compose.yml'
-      - 'infra/ansible/playbook.yml'
+      - 'infra/ansible/**'
 
 jobs:
   deploy:

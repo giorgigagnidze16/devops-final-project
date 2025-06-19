@@ -1,0 +1,31 @@
+- name: Remove /tmp/deployment/infra directory
+  ansible.builtin.file:
+    path: /tmp/deployment/infra
+    state: absent
+
+- name: check /tmp/deployment/infra directory exists
+  ansible.builtin.file:
+    path: /tmp/deployment/infra
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user }}"
+
+- name: Copy infra except terraform using synchronize
+  ansible.posix.synchronize:
+    src: "../infra/"
+    dest: "/tmp/deployment/infra/"
+    recursive: true
+    dirs: true
+    rsync_opts:
+      - "--exclude=terraform/"
+      - "--delete"
+    delegate_to: localhost
+
+
+- name: Set owner and mode for copied files
+  ansible.builtin.file:
+    path: "/tmp/deployment/infra"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+    recurse: true
