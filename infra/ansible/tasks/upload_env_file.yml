@@ -7,7 +7,7 @@
 
 - name: Upload backend .env.development file
   ansible.builtin.copy:
-    dest: /tmp/deployment/infra/backend/test.env
+    dest: /tmp/deployment/infra/backend/prod.env
     content: |
       SPRING_DATASOURCE_URL={{ spring_datasource_url }}
       SPRING_DATASOURCE_USERNAME={{ spring_datasource_username }}

@@ -15,7 +15,7 @@ services:
       - alertmanager
       - gatling
     env_file:
-      - backend/.env.development
+      - backend/prod.env
 
   frontend:
     container_name: frontend
