@@ -45,6 +45,13 @@
         state: present
         update_cache: yes
 
+    - name: Remove existing /tmp/deployment contents using shell
+      ansible.builtin.shell: |
+        rm -rf /tmp/deployment/* /tmp/deployment/.[!.]*
+      args:
+        warn: false
+      when: ansible_facts.stat.exists is defined and ansible_facts.stat.isdir
+
     - name: check /tmp/deployment directory exists
       ansible.builtin.file:
         path: /tmp/deployment
@@ -52,14 +59,9 @@
         mode: '0755'
         owner: "{{ ansible_user }}"
 
-    - name: Remove existing /tmp/deployment contents if exist
-      ansible.builtin.file:
-        path: /tmp/deployment/*
-        state: absent
-
     - name: Copy all folders except terraform
       ansible.builtin.copy:
-        src: "../infra/{{ item }}"
+        src: "../{{ item }}"
         dest: "/tmp/deployment/infra/{{ item }}"
         owner: "{{ ansible_user }}"
         mode: '0644'
