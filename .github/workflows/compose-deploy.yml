@@ -31,7 +31,7 @@ jobs:
       - name: Create Ansible inventory file
         run: |
           echo "[gcp]" > inventory
-          echo "${{ secrets.GCP_VM_HOST }} ansible_user=${{ secrets.GCP_VM_USER }} ansible_ssh_private_key_file=./id_rsa" >> inventory
+          echo "${{ secrets.GCP_VM_HOST }} ansible_user=${{ secrets.GCP_VM_USER }} ansible_ssh_private_key_file=$(pwd)/id_rsa" >> inventory
 
       - name: Run Ansible Playbook
         env:
