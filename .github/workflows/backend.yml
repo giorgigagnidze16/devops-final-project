@@ -70,6 +70,6 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           script: |
-            cd /tmp/deployment/
+            cd /tmp/deployment/infra
             docker compose build backend
             docker compose up -d backend
