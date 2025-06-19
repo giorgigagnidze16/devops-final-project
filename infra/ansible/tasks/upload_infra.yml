@@ -18,7 +18,7 @@
 
 - name: Copy all folders except terraform
   ansible.builtin.synchronize:
-    src: "{{ playbook_dir }}/../"
+    src: /infra
     dest: /tmp/deployment/infra/
     rsync_opts:
       - "--exclude=terraform"
