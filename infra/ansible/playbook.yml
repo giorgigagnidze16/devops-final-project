@@ -4,3 +4,4 @@
     - import_tasks: tasks/docker_install.yml
     - import_tasks: tasks/upload_infra.yml
     - import_tasks: tasks/prepare_folders.yml
+    - import_tasks: tasks/upload_smtp_creds.yml

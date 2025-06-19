@@ -126,4 +126,4 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
-/infra/monitoring/alertmanager/.alertmanager.env
+/infra/monitoring/alertmanager/alertmanager.yml
