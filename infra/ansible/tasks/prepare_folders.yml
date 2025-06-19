@@ -1,0 +1,23 @@
+- name: delete backend directory
+  ansible.builtin.file:
+    path: /tmp/deployment/backend
+    state: absent
+
+- name: recreate an empty backend directory
+  ansible.builtin.file:
+    path: /tmp/deployment/backend
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user }}"
+
+- name: delete frontend directory
+  ansible.builtin.file:
+    path: /tmp/deployment/frontend
+    state: absent
+
+- name: recreate an empty frontend directory
+  ansible.builtin.file:
+    path: /tmp/deployment/frontend
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user }}"
