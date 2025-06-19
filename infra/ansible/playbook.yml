@@ -45,13 +45,6 @@
         state: present
         update_cache: yes
 
-    - name: Remove existing /tmp/deployment contents using shell
-      ansible.builtin.shell: |
-        rm -rf /tmp/deployment/* /tmp/deployment/.[!.]*
-      args:
-        warn: false
-      when: ansible_facts.stat.exists is defined and ansible_facts.stat.isdir
-
     - name: check /tmp/deployment directory exists
       ansible.builtin.file:
         path: /tmp/deployment
@@ -59,14 +52,22 @@
         mode: '0755'
         owner: "{{ ansible_user }}"
 
-    - name: Print current working directory
-      ansible.builtin.command: pwd
-      delegate_to: localhost
+    - name: Remove existing compose.yml from /tmp/deployment if present
+      ansible.builtin.file:
+        path: /tmp/deployment/compose.yml
+        state: absent
 
     - name: Copy all folders except terraform
       ansible.builtin.copy:
-        src: "../{{ item }}"
+        src: "../infra/{{ item }}"
         dest: "/tmp/deployment/infra/{{ item }}"
         owner: "{{ ansible_user }}"
         mode: '0644'
       with_items: "{{ lookup('fileglob', '../infra/*', wantlist=True) | map('basename') | difference(['terraform']) }}"
+
+    - name: Upload compose.yml to /tmp/deployment
+      ansible.builtin.copy:
+        src: ../compose.yml
+        dest: /tmp/deployment/compose.yml
+        owner: "{{ ansible_user }}"
+        mode: '0644'
