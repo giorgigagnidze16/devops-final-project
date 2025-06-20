@@ -73,6 +73,12 @@ security scanning, and stress testing.
 - **Alerting:**  
   Alertmanager sends notification emails when service outages or issues are detected.
 
+- **Performance Loading:**  
+  Gatling can be run in order to stress-test and simulate highly concurrent load environment.
+- 
+- **ELK:**  
+  ELK stack is utilized to monitor and analyze logs.
+
 ---
 
 ## How Monitoring and Security Were Implemented
