@@ -3,10 +3,10 @@
     dest: /tmp/deployment/infra/monitoring/alertmanager/alertmanager.yml
     content: |
       global:
-        smtp_smarthost: '{{ smtp_smarthost }}'
-        smtp_from: '{{ smtp_from }}'
-        smtp_auth_username: '{{ smtp_auth_username }}'
-        smtp_auth_password: '{{ smtp_auth_password }}'
+        smtp_smarthost: {{ smtp_smarthost      | quote }}
+        smtp_from: {{ smtp_from           | quote }}
+        smtp_auth_username: {{ smtp_auth_username  | quote }}
+        smtp_auth_password: {{ smtp_auth_password  | quote }}
         smtp_require_tls: true
 
       route:
