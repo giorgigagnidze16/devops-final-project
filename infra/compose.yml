@@ -64,13 +64,13 @@ services:
       - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
 
-  gatling:
-    image: denvazh/gatling
-    container_name: gatling
-    volumes:
-      - ./gatling/user-files:/opt/gatling/user-files
-      - ./gatling/results:/opt/gatling/results
-    entrypoint: [ "/opt/gatling/bin/gatling.sh", "-s", "CrudSimulation" ]
+#  gatling:
+#    image: denvazh/gatling
+#    container_name: gatling
+#    volumes:
+#      - ./gatling/user-files:/opt/gatling/user-files
+#      - ./gatling/results:/opt/gatling/results
+#    entrypoint: [ "/opt/gatling/bin/gatling.sh", "-s", "CrudSimulation" ]
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
