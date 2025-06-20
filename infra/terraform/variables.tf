@@ -24,9 +24,11 @@ variable "vm_name" {
 }
 
 variable "machine_type" {
-  description = "GCP machine type"
-  default     = "e2-medium"
+  description = "vm machine"
+  type        = string
+  default     = "n1-custom-4-10240"
 }
+
 
 variable "disk_image" {
   description = "image to use"
