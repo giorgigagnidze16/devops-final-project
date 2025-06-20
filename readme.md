@@ -75,7 +75,7 @@ security scanning, and stress testing.
 
 - **Performance Loading:**  
   Gatling can be run in order to stress-test and simulate highly concurrent load environment.
-- 
+
 - **ELK:**  
   ELK stack is utilized to monitor and analyze logs.
 
