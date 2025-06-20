@@ -29,8 +29,6 @@ services:
       - frontend/.env.development
     expose:
       - "5000"
-    depends_on:
-      - nginx
 
   nginx:
     image: nginx:1.25-alpine
@@ -39,6 +37,9 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
 
   prometheus:
     image: prom/prometheus:v2.44.0
