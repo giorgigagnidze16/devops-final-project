@@ -28,7 +28,8 @@ security scanning, and stress testing.
 3. **Build the Backend**
     ```bash
     cd backend
-    ./gradlew bootJar
+    .\gradlew clean
+    .\gradlew bootJar
     cd ..
     ```
 
