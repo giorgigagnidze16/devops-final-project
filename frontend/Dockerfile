@@ -1,8 +1,14 @@
-FROM node:14.9.0
+FROM node:14.9.0 AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+
+COPY package.json package-lock.json ./
+
+RUN npm ci --prefer-offline --no-audit
+
 COPY . .
+
 RUN npm run build
-EXPOSE 3000
-CMD ["npm", "run", "start"]
+
+
+FROM scratch AS artifacts
+COPY --from=builder /app/build /build
