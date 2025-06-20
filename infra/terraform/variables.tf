@@ -15,7 +15,7 @@ variable "region" {
 
 variable "zone" {
   description = "GCP zone"
-  default     = "europe-west3-a"
+  default     = "europe-west3-b"
 }
 
 variable "vm_name" {
