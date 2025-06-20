@@ -15,6 +15,9 @@ security scanning, and stress testing.
 ---
 
 ## Setup Instructions
+Requirement: 
+ - Java 21
+ - node installed with npm
 
 1. **Clone the Repository**
     ```bash
