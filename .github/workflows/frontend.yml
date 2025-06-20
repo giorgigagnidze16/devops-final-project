@@ -18,18 +18,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'yarn'
-          cache-dependency-path: frontend/yarn.lock
 
       - name: install dependencies
+        run: npm ci
         working-directory: ./frontend
-        run: yarn install --frozen-lockfile
 
       - name: build frontend
+        run: npm run build
         working-directory: ./frontend
-        run: yarn build
 
-      - name: delete frontend deployment directory
+      - name: Empty frontend deployment directory
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.GCP_VM_HOST }}
@@ -38,13 +36,22 @@ jobs:
           script: |
             rm -rf /tmp/deployment/frontend/*
 
-      - name: upload frontend
+      - name: Upload frontend Dockerfile
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.GCP_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
-          source: ./frontend/
+          source: ./frontend/Dockerfile
+          target: /tmp/deployment/
+
+      - name: Upload frontend build folder
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          source: ./frontend/build
           target: /tmp/deployment/
 
       - name: Start frontend container
@@ -54,6 +61,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           script: |
+            cd /tmp/deployment/
             cd /tmp/deployment/infra
             docker compose build frontend
-            docker compose up -d frontend
+            docker compose up -d

@@ -1,22 +1,8 @@
-FROM node:20 AS builder
+FROM node:14.9.0
 WORKDIR /app
-
-COPY package.json yarn.lock ./
-
-RUN --mount=type=cache,id=yarn,target=/root/.cache/yarn \
-    yarn install --frozen-lockfile
-
+COPY package*.json ./
+RUN npm install
 COPY . .
-
-RUN yarn build
-
-FROM node:20-slim AS runtime
-WORKDIR /app
-
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/build      ./build
-
-COPY package.json ./
-
+RUN npm run build
 EXPOSE 3000
 CMD ["npm", "run", "start"]
