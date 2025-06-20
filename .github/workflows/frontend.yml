@@ -44,8 +44,8 @@ jobs:
           host: ${{ secrets.GCP_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
-          source: ./frontend/build/
-          target: /tmp/deployment/frontend
+          source: ./frontend/
+          target: /tmp/deployment/
 
       - name: Start frontend container
         uses: appleboy/ssh-action@v1.0.0
