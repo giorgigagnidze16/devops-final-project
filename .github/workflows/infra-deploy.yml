@@ -43,7 +43,7 @@ jobs:
             -e "smtp_smarthost=${{ secrets.SMTP_SMARTHOST }}" \
             -e "smtp_from=${{ secrets.SMTP_FROM }}" \
             -e "smtp_auth_username=${{ secrets.SMTP_AUTH_USERNAME }}" \
-            -e "smtp_auth_password=${{ secrets.SMTP_AUTH_PASSWORD }}" \
+            -e "smtp_auth_password='${{ secrets.SMTP_AUTH_PASSWORD }}'" \
             -e "smtp_to=${{ secrets.SMTP_TO }}" \
             -e "spring_datasource_url=${{ secrets.SPRING_DATASOURCE_URL }}" \
             -e "spring_datasource_username=${{ secrets.SPRING_DATASOURCE_USERNAME }}" \
