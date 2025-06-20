@@ -26,7 +26,7 @@ variable "vm_name" {
 variable "machine_type" {
   description = "vm machine"
   type        = string
-  default     = "n1-custom-4-10240"
+  default     = "e2-standard-4"
 }
 
 
