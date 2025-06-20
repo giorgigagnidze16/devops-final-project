@@ -13,4 +13,4 @@
       SPRING_DATASOURCE_USERNAME={{ spring_datasource_username }}
       SPRING_DATASOURCE_PASSWORD={{ spring_datasource_password }}
     owner: "{{ ansible_user | default('deployer') }}"
-    mode: '0600'
+    mode: '0666'
