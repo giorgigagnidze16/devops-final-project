@@ -1,4 +1,4 @@
-FROM node:14.9.0 AS builder
+FROM node:20 AS builder
 WORKDIR /app
 
 COPY package.json yarn.lock ./
@@ -12,7 +12,7 @@ COPY src    ./src
 RUN yarn build
 
 
-FROM node:14.9.0-slim AS runtime
+FROM node:20-slim AS runtime
 WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
