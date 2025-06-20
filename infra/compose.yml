@@ -13,12 +13,8 @@ services:
       - grafana
       - prometheus
       - alertmanager
-      - gatling
-      - elasticsearch
-      - logstash
-      - kibana
     env_file:
-      - backend/prod.env
+      - backend/.env.development
 
   frontend:
     container_name: frontend
