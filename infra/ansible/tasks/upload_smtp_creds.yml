@@ -15,7 +15,7 @@
       receivers:
         - name: 'email-alerts'
           email_configs:
-            - to: '{{ smtp_to }}'
+            - to: {{ smtp_to }}
               send_resolved: true
     owner: "{{ ansible_user | default('deployer') }}"
     mode: '0666'
